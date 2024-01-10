@@ -1,15 +1,15 @@
 package org.example.model;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Entity
-@Table(name = "Person")
+@Entity//Аннотация, которая указывает, что класс является сущностью.
+@Table(name = "Person")//Аннотация, которая позволяет настроить свойства таблицы базы данных в данном случае имя таблици
 public class Person {
-    @Id
-    @Column(name = "id")
+    @Id//Указывает, что поле, к которому применяется аннотация, является первичным ключом сущности.
+    @Column(name = "id")//Аннотация, которая позволяет настроить свойства столбца базы данных для поля сущности.
+    // Можно указать имя столбца с помощью атрибута name.
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//: Аннотация для указания стратегии генерации значений для
+    // первичного ключа.IDENTITY говорит hibernate не трогать поля id оно генерируеться на стороне bd
     private int id;
     @Column(name = "name")
     private String name;
@@ -18,8 +18,7 @@ public class Person {
 
     public Person() {}
 
-    public Person(int id, String name, int age) {
-        this.id = id;
+    public Person(String name, int age) {
         this.name = name;
         this.age = age;
     }
