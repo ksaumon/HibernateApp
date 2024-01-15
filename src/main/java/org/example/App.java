@@ -129,6 +129,72 @@ public class App {
 //    }
 
 
+//    public static void main( String[] args ) {
+//        Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Item.class);
+//
+//        SessionFactory sessionFactory = configuration.buildSessionFactory();
+//        Session session = sessionFactory.getCurrentSession();
+//        try {
+//            session.beginTransaction();
+////            Person person = session.get(Person.class, 3);//для данного человека
+////            System.out.println(person);
+////
+////            List<Item> items = person.getItems();
+////            System.out.println(items);//получили все товары
+//
+////            Item item = session.get(Item.class, 5);// связь двухстороннея можем для данного товара получить
+////            //всех людей
+////            System.out.println(item);
+////
+////            Person person = item.getOwner();
+////            System.out.println(person);// получить всех людей
+//
+////            Добавляем товар для существующего человека
+////            Person person = session.get(Person.class, 2);
+////            Item newItem = new Item("Item from Hibernate", person);// указание связи на стороне item(товар)
+////            // у товара есть человек а ниже строча сохранения у человека этого товара
+////            person.getItems().add(newItem); // данная строчка актуализирует кеш Hibernate не создавая SQL код
+////
+////            session.save(newItem);
+//
+////            создаем нового человека с одним заказом
+////            Person person = new Person("Test Person", 30);
+////            Item newItem = new Item("Item from Hibernate 2", person);
+////            person.setItems(new ArrayList<>(Collections.singletonList(newItem)));
+////            session.save(person);
+////            session.save(newItem);
+//
+////          удаление товаров у человека
+////            Person person = session.get(Person.class, 3);
+////            List<Item> items = person.getItems();
+////
+////            for (Item item: items) {
+////                session.remove(item);
+////            }
+////            person.getItems().clear();
+//
+////            удаление человека
+////            Person person = session.get(Person.class, 2);
+////
+////            session.remove(person);// удаление
+////            person.getItems().forEach(item -> item.setOwner(null));//актуализация кэша Hibernate
+//
+////           меняем человека у товара
+//            Person person = session.get(Person.class, 4);
+//            Item item = session.get(Item.class, 1);
+//            item.getOwner().getItems().remove(item);// у старого владельца удаляеться товар для кэша Hibernate
+//
+//            item.setOwner(person);
+//            person.getItems().add(item);
+//
+//            session.getTransaction().commit();
+//        } finally {
+//            sessionFactory.close();
+//        }
+//    }
+
+
+//         Каскадирование в Hibernate
     public static void main( String[] args ) {
         Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Item.class);
 
@@ -136,62 +202,24 @@ public class App {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-//            Person person = session.get(Person.class, 3);//для данного человека
-//            System.out.println(person);
-//
-//            List<Item> items = person.getItems();
-//            System.out.println(items);//получили все товары
-
-//            Item item = session.get(Item.class, 5);// связь двухстороннея можем для данного товара получить
-//            //всех людей
-//            System.out.println(item);
-//
-//            Person person = item.getOwner();
-//            System.out.println(person);// получить всех людей
-
-//            Добавляем товар для существующего человека
-
-//            Person person = session.get(Person.class, 2);
-//            Item newItem = new Item("Item from Hibernate", person);// указание связи на стороне item(товар)
-//            // у товара есть человек а ниже строча сохранения у человека этого товара
-//            person.getItems().add(newItem); // данная строчка актуализирует кеш Hibernate не создавая SQL код
-//
-//            session.save(newItem);
-
-//            создаем нового человека с одним заказом
-//            Person person = new Person("Test Person", 30);
-//            Item newItem = new Item("Item from Hibernate 2", person);
-//            person.setItems(new ArrayList<>(Collections.singletonList(newItem)));
+//            Person person = new Person("Test cascading", 1);
+//            Item item = new Item("Test cascading item", person);
+//            person.setItems(new ArrayList<>(Collections.singletonList(item)));
+//           // session.persist(person); при использовании persist вместо save
 //            session.save(person);
-//            session.save(newItem);
+            //session.save(item); данная строчка необходима если не использовать каскадирование иначе будет ошибка
+            //так как у нас в bd есть связь  при создании person_id int REFERENCES Person(id) ON DELETE SET NULL
 
-//          удаление товаров у человека
-//            Person person = session.get(Person.class, 3);
-//            List<Item> items = person.getItems();
-//
-//            for (Item item: items) {
-//                session.remove(item);
-//            }
-//            person.getItems().clear();
+            Person person = new Person("Test cascading", 30);
 
-//            удаление человека
-//            Person person = session.get(Person.class, 2);
-//
-//            session.remove(person);// удаление
-//            person.getItems().forEach(item -> item.setOwner(null));//актуализация кэша Hibernate
-
-//           меняем человека у товара
-            Person person = session.get(Person.class, 4);
-            Item item = session.get(Item.class, 1);
-            item.getOwner().getItems().remove(item);// у старого владельца удаляеться товар для кэша Hibernate
-
-            item.setOwner(person);
-            person.getItems().add(item);
-
+            person.addItem(new Item("item1"));
+            person.addItem(new Item("item2"));
+            person.addItem(new Item("item3"));
+            session.save(person);
             session.getTransaction().commit();
+
         } finally {
             sessionFactory.close();
         }
     }
-
 }
