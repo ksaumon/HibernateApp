@@ -1,6 +1,7 @@
 package org.example.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity//Аннотация, которая указывает, что класс является сущностью.
 @Table(name = "Person")//Аннотация, которая позволяет настроить свойства таблицы базы данных в данном случае имя таблици
@@ -15,6 +16,8 @@ public class Person {
     private String name;
     @Column(name = "age")
     private int age;
+    @OneToMany(mappedBy = "owner")
+    private List<Item> items;
 
     public Person() {}
 
@@ -45,5 +48,22 @@ public class Person {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                '}';
     }
 }
