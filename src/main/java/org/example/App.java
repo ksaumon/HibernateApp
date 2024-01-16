@@ -234,10 +234,10 @@ public class App {
         try {
             session.beginTransaction();
 
-//            Person person = new Person("Test person", 50);//добавили человека
-//            Passport passport = new Passport(123456);//добавили человеку паспорт
-//            person.setPassport(passport);//сохранили паспорт
-//            session.save(person);//сохранили человека
+            Person person = new Person("Test person", 50);//добавили человека
+            Passport passport = new Passport(123456);//добавили человеку паспорт
+            person.setPassport(passport);//сохранили паспорт
+            session.save(person);//сохранили человека
 //            Person person = session.get(Person.class, 1);// прочитали человека
 //            System.out.println(person.getPassport().getPassportNumber());// получили номер
 //            Passport passport = session.get(Passport.class, 1);// прочитали паспорт
@@ -247,9 +247,9 @@ public class App {
 //            Person person = session.get(Person.class, 1);
 //            person.getPassport().setPassportNumber(654321);
 
-            //удаление человека
-            Person person = session.get(Person.class, 1);
-            session.remove(person);
+//            //удаление человека
+//            Person person = session.get(Person.class, 1);
+//            session.remove(person);
 
             session.getTransaction().commit();
 
