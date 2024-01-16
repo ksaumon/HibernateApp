@@ -2,6 +2,7 @@ package org.example;
 
 
 import org.example.model.Item;
+import org.example.model.Passport;
 import org.example.model.Person;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -195,27 +196,61 @@ public class App {
 
 
 //         Каскадирование в Hibernate
+//    public static void main( String[] args ) {
+//        Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Item.class);
+//
+//        SessionFactory sessionFactory = configuration.buildSessionFactory();
+//        Session session = sessionFactory.getCurrentSession();
+//        try {
+//            session.beginTransaction();
+////            Person person = new Person("Test cascading", 1);
+////            Item item = new Item("Test cascading item", person);
+////            person.setItems(new ArrayList<>(Collections.singletonList(item)));
+////           // session.persist(person); при использовании persist вместо save
+////            session.save(person);
+//            //session.save(item); данная строчка необходима если не использовать каскадирование иначе будет ошибка
+//            //так как у нас в bd есть связь  при создании person_id int REFERENCES Person(id) ON DELETE SET NULL
+//
+//            Person person = new Person("Test cascading", 30);
+//
+//            person.addItem(new Item("item1"));
+//            person.addItem(new Item("item2"));
+//            person.addItem(new Item("item3"));
+//            session.save(person);
+//            session.getTransaction().commit();
+//
+//        } finally {
+//            sessionFactory.close();
+//        }
+//    }
+
+
     public static void main( String[] args ) {
-        Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Item.class);
+        Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
+                .addAnnotatedClass(Passport.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-//            Person person = new Person("Test cascading", 1);
-//            Item item = new Item("Test cascading item", person);
-//            person.setItems(new ArrayList<>(Collections.singletonList(item)));
-//           // session.persist(person); при использовании persist вместо save
-//            session.save(person);
-            //session.save(item); данная строчка необходима если не использовать каскадирование иначе будет ошибка
-            //так как у нас в bd есть связь  при создании person_id int REFERENCES Person(id) ON DELETE SET NULL
 
-            Person person = new Person("Test cascading", 30);
+//            Person person = new Person("Test person", 50);//добавили человека
+//            Passport passport = new Passport(123456);//добавили человеку паспорт
+//            person.setPassport(passport);//сохранили паспорт
+//            session.save(person);//сохранили человека
+//            Person person = session.get(Person.class, 1);// прочитали человека
+//            System.out.println(person.getPassport().getPassportNumber());// получили номер
+//            Passport passport = session.get(Passport.class, 1);// прочитали паспорт
+//            System.out.println(passport.getPerson().getName());// получили имя
 
-            person.addItem(new Item("item1"));
-            person.addItem(new Item("item2"));
-            person.addItem(new Item("item3"));
-            session.save(person);
+//            //изменение номера паспорта
+//            Person person = session.get(Person.class, 1);
+//            person.getPassport().setPassportNumber(654321);
+
+            //удаление человека
+            Person person = session.get(Person.class, 1);
+            session.remove(person);
+
             session.getTransaction().commit();
 
         } finally {

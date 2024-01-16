@@ -22,15 +22,27 @@ public class Person {
     //@OneToMany(mappedBy = "owner", cascade = CascadeType.PERSIST)//вместо метода save можно использовать данный метод
     // PERSIST, различие в том что PERSIST есть везде и ничего не возвращает, а save только в Hibernate и может что
     // возвращать по запросу
-    @OneToMany(mappedBy = "owner")
+//    @OneToMany(mappedBy = "owner")
+//    @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
+//    private List<Item> items;
+    @OneToOne(mappedBy = "person")
     @Cascade(org.hibernate.annotations.CascadeType.SAVE_UPDATE)
-    private List<Item> items;
+    private Passport passport;
 
     public Person() {}
 
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
+    }
+
+    public Passport getPassport() {
+        return passport;
+    }
+
+    public void setPassport(Passport passport) {
+        this.passport = passport;
+        getPassport().setPerson(this);
     }
 
     public int getId() {
@@ -57,21 +69,21 @@ public class Person {
         this.age = age;
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
-
-    public void addItem(Item item) {
-        if (this.items == null)
-            this.items = new ArrayList<>();
-
-        this.items.add(item);
-        item.setOwner(this);
-    }
+//    public List<Item> getItems() {
+//        return items;
+//    }
+//
+//    public void setItems(List<Item> items) {
+//        this.items = items;
+//    }
+//
+//    public void addItem(Item item) {
+//        if (this.items == null)
+//            this.items = new ArrayList<>();
+//
+//        this.items.add(item);
+//        item.setOwner(this);
+//    }
 
     @Override
     public String toString() {
