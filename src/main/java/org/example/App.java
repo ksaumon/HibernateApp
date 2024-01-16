@@ -1,9 +1,7 @@
 package org.example;
 
 
-import org.example.model.Item;
-import org.example.model.Passport;
-import org.example.model.Person;
+import org.example.model.*;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -225,36 +223,88 @@ public class App {
 //    }
 
 
+//    public static void main( String[] args ) {
+//        Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
+//                .addAnnotatedClass(Passport.class);
+//
+//        SessionFactory sessionFactory = configuration.buildSessionFactory();
+//        Session session = sessionFactory.getCurrentSession();
+//        try {
+//            session.beginTransaction();
+//
+//            Person person = new Person("Test person", 50);//добавили человека
+//            Passport passport = new Passport(123456);//добавили человеку паспорт
+//            person.setPassport(passport);//сохранили паспорт
+//            session.save(person);//сохранили человека
+////            Person person = session.get(Person.class, 1);// прочитали человека
+////            System.out.println(person.getPassport().getPassportNumber());// получили номер
+////            Passport passport = session.get(Passport.class, 1);// прочитали паспорт
+////            System.out.println(passport.getPerson().getName());// получили имя
+//
+////            //изменение номера паспорта
+////            Person person = session.get(Person.class, 1);
+////            person.getPassport().setPassportNumber(654321);
+//
+////            //удаление человека
+////            Person person = session.get(Person.class, 1);
+////            session.remove(person);
+//
+//            session.getTransaction().commit();
+//
+//        } finally {
+//            sessionFactory.close();
+//        }
+//    }
+
     public static void main( String[] args ) {
-        Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Passport.class);
+        Configuration configuration = new Configuration().addAnnotatedClass(Actor.class)
+                .addAnnotatedClass(Movie.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
-        Session session = sessionFactory.getCurrentSession();
-        try {
+        // try с ресурсами
+        try (sessionFactory) {
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-            Person person = new Person("Test person", 50);//добавили человека
-            Passport passport = new Passport(123456);//добавили человеку паспорт
-            person.setPassport(passport);//сохранили паспорт
-            session.save(person);//сохранили человека
-//            Person person = session.get(Person.class, 1);// прочитали человека
-//            System.out.println(person.getPassport().getPassportNumber());// получили номер
-//            Passport passport = session.get(Passport.class, 1);// прочитали паспорт
-//            System.out.println(passport.getPerson().getName());// получили имя
+//            Movie movie = new Movie("Puil fiction", 1994);
+//            Actor actor1 = new Actor("Marvel Katel", 81);
+//            Actor actor2 = new Actor("Samuel Io", 80);
+//
+//            movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
+//
+//            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+//            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+//
+//            session.save(movie);
+//
+//            session.save(actor1);
+//            session.save(actor2);
 
-//            //изменение номера паспорта
-//            Person person = session.get(Person.class, 1);
-//            person.getPassport().setPassportNumber(654321);
+//            получаем список актеров для фильма
+//            Movie movie = session.get(Movie.class, 1);
+//            System.out.println(movie.getActors());
 
-//            //удаление человека
-//            Person person = session.get(Person.class, 1);
-//            session.remove(person);
+
+////            добавим новый фильм для актера
+//            Movie movie = new Movie("Reservoir Dogs", 1992);
+//            Actor actor = session.get(Actor.class, 1);
+//
+//            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
+//            actor.getMovies().add(movie);
+//
+//            session.save(movie);
+
+            //            удалим фильм у актера
+
+            Actor actor = session.get(Actor.class, 1);//получаем актера по айди
+            System.out.println(actor.getMovies());//выводим для него список фильмов
+            Movie movieToRemove = actor.getMovies().get(0);// получаем тот фильм из списка который хотим удалить
+
+            actor.getMovies().remove(0);// у актера удаляем фильм по индексу
+            movieToRemove.getActors().remove(actor);// у фильма удаляем актера
 
             session.getTransaction().commit();
 
-        } finally {
-            sessionFactory.close();
         }
     }
 }
