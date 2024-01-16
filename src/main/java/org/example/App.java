@@ -2,6 +2,7 @@ package org.example;
 
 
 import org.example.model.*;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -256,9 +257,63 @@ public class App {
 //        }
 //    }
 
+//    public static void main( String[] args ) {
+//        Configuration configuration = new Configuration().addAnnotatedClass(Actor.class)
+//                .addAnnotatedClass(Movie.class);
+//
+//        SessionFactory sessionFactory = configuration.buildSessionFactory();
+//        // try с ресурсами
+//        try (sessionFactory) {
+//            Session session = sessionFactory.getCurrentSession();
+//            session.beginTransaction();
+//
+////            Movie movie = new Movie("Puil fiction", 1994);
+////            Actor actor1 = new Actor("Marvel Katel", 81);
+////            Actor actor2 = new Actor("Samuel Io", 80);
+////
+////            movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
+////
+////            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+////            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+////
+////            session.save(movie);
+////
+////            session.save(actor1);
+////            session.save(actor2);
+//
+////            получаем список актеров для фильма
+////            Movie movie = session.get(Movie.class, 1);
+////            System.out.println(movie.getActors());
+//
+//
+//////            добавим новый фильм для актера
+////            Movie movie = new Movie("Reservoir Dogs", 1992);
+////            Actor actor = session.get(Actor.class, 1);
+////
+////            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
+////            actor.getMovies().add(movie);
+////
+////            session.save(movie);
+//
+//            //            удалим фильм у актера
+//
+//            Actor actor = session.get(Actor.class, 1);//получаем актера по айди
+//            System.out.println(actor.getMovies());//выводим для него список фильмов
+//            Movie movieToRemove = actor.getMovies().get(0);// получаем тот фильм из списка который хотим удалить
+//
+//            actor.getMovies().remove(0);// у актера удаляем фильм по индексу
+//            movieToRemove.getActors().remove(actor);// у фильма удаляем актера
+//
+//            session.getTransaction().commit();
+//
+//        }
+//    }
+
+
+
     public static void main( String[] args ) {
-        Configuration configuration = new Configuration().addAnnotatedClass(Actor.class)
-                .addAnnotatedClass(Movie.class);
+        Configuration configuration = new Configuration().addAnnotatedClass(Person.class)
+                .addAnnotatedClass(Item.class);
 
         SessionFactory sessionFactory = configuration.buildSessionFactory();
         // try с ресурсами
@@ -266,43 +321,19 @@ public class App {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-//            Movie movie = new Movie("Puil fiction", 1994);
-//            Actor actor1 = new Actor("Marvel Katel", 81);
-//            Actor actor2 = new Actor("Samuel Io", 80);
-//
-//            movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
-//
-//            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
-//            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
-//
-//            session.save(movie);
-//
-//            session.save(actor1);
-//            session.save(actor2);
-
-//            получаем список актеров для фильма
-//            Movie movie = session.get(Movie.class, 1);
-//            System.out.println(movie.getActors());
-
-
-////            добавим новый фильм для актера
-//            Movie movie = new Movie("Reservoir Dogs", 1992);
-//            Actor actor = session.get(Actor.class, 1);
-//
-//            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
-//            actor.getMovies().add(movie);
-//
-//            session.save(movie);
-
-            //            удалим фильм у актера
-
-            Actor actor = session.get(Actor.class, 1);//получаем актера по айди
-            System.out.println(actor.getMovies());//выводим для него список фильмов
-            Movie movieToRemove = actor.getMovies().get(0);// получаем тот фильм из списка который хотим удалить
-
-            actor.getMovies().remove(0);// у актера удаляем фильм по индексу
-            movieToRemove.getActors().remove(actor);// у фильма удаляем актера
-
+            Person person = session.get(Person.class, 10);
+            System.out.println("Получили человека");
+            // получим связаные сущьности (Lazy)
+            System.out.println(person.getItems());
+//          чтобы подгрузить товары из bd используется строчка сверху или метод
+           // Hibernate.initialize(person.getItems());
+            session.getTransaction().commit();
+            //если после зарытия сессии неоходимо подгрузить данные снова открываем сессию и подружаем
+            // и в даже после закрытия второй сессии данные будут видны так как они были подгружены
+            session = sessionFactory.getCurrentSession();
+            session.beginTransaction();
+            person = (Person) session.merge(person);//пристегиваем person ко второй сессии
+            Hibernate.initialize(person);// подгружаем данные
             session.getTransaction().commit();
 
         }
